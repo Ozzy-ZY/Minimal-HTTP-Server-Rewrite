@@ -2,6 +2,7 @@ using System.Text;
 using Xunit;
 using Minimal_Web_Server_Rewrite;
 using Minimal_Web_Server_Rewrite.Models;
+using Minimal_Web_Server_Rewrite.Parsing;
 using HttpMethod = Minimal_Web_Server_Rewrite.Models.HttpMethod;
 
 namespace Minimal_Web_Server_Rewrite.Tests

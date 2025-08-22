@@ -2,7 +2,7 @@ using System.Text;
 using Minimal_Web_Server_Rewrite.Models;
 using HttpMethod = Minimal_Web_Server_Rewrite.Models.HttpMethod;
 
-namespace Minimal_Web_Server_Rewrite;
+namespace Minimal_Web_Server_Rewrite.Parsing;
 
 public class HttpParser
 {
