@@ -21,7 +21,7 @@ public class HttpParser
         request.Headers = ParseHeaders(lines, out int bodyIdx);
         
         string headersPart = string.Join("\r\n", lines.Take(bodyIdx));
-        byte[] headersPartBytes = Encoding.UTF8.GetBytes(headersPart + "\r\n\r\n");
+        byte[] headersPartBytes = Encoding.UTF8.GetBytes(headersPart + "\r\n");
         var bodyStartByteIdx = headersPartBytes.Length;
         
         if (request.Headers.TryGetValue("Content-Length", out var contentLengthStr))
@@ -72,8 +72,11 @@ public class HttpParser
     {
         if(bodyStartByteIdx < buffer.Length)
         {
-            int bodyEndByteIdx = bodyStartByteIdx + contentLength;
-            return buffer.Skip(bodyStartByteIdx - 2).Take(bodyEndByteIdx).ToArray(); // 2 is a magic number for now Until I debug more 
+            int neededBytes = buffer.Length - bodyStartByteIdx;
+            int bytesToRead = Math.Min(neededBytes, contentLength);
+            byte[] body = new byte[bytesToRead];
+            Array.Copy(buffer, bodyStartByteIdx, body, 0, bytesToRead);
+            return body;
         }
 
         return [];
