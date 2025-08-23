@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using System.Text;
 using Minimal_Web_Server_Rewrite.Handlers;
 using Minimal_Web_Server_Rewrite.Models;
 using HttpMethod = Minimal_Web_Server_Rewrite.Models.HttpMethod;
@@ -13,26 +14,7 @@ public class HttpRouter: IRouter
         var routeKey = $"{method.ToString().ToUpper()}:{path}";
         _routes.Add(routeKey, handler);
     }
-
-    public bool RouteRequestToHandler(HttpRequest request, Socket socket)
-    {
-        var routeKey = $"{request.Method.ToString().ToUpper()}:{request.Path}";
-        if (_routes.TryGetValue(routeKey, out var handler))
-        {
-            try
-            {
-                handler.HandleRequest(request, socket);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-        }
-
-        return false;
-    }
-
+    
     public async Task<bool> RouteRequestToHandlerAsync(HttpRequest request, Socket socket)
     {
         var routeKey = $"{request.Method.ToString().ToUpper()}:{request.Path}";
@@ -40,8 +22,20 @@ public class HttpRouter: IRouter
         {
             try
             {
-                await handler.HandleRequestAsync(request, socket);
-                return true;
+                switch (handler)
+                {
+                    case IAsyncHandler asyncHandler:
+                        await asyncHandler.HandleRequestAsync(request, socket);
+                        break;
+                    case ISyncHandler syncHandler:
+                        await Task.Run( () => syncHandler.HandleRequest(request, socket));
+                        break;
+                    default:
+                        HttpResponse.ResponseBuilder responseBuilder = new();
+                        var response = responseBuilder.WithStatusCode(HttpStatusCode.NotFound).WithStatusText("Not Found").Build();
+                        await socket.SendAsync(Encoding.UTF8.GetBytes(response.ToString()));
+                        break;
+                }
             }
             catch (Exception e)
             {

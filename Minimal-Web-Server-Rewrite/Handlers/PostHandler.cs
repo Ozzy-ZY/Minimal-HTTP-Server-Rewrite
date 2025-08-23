@@ -4,7 +4,7 @@ using Minimal_Web_Server_Rewrite.Models;
 
 namespace Minimal_Web_Server_Rewrite.Handlers;
 
-public class PostHandler:IHttpHandler
+public class PostHandler:IAsyncHandler
 {
     public async Task HandleRequestAsync(HttpRequest request, Socket socket)
     {

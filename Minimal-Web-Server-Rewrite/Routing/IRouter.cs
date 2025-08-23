@@ -8,6 +8,5 @@ namespace Minimal_Web_Server_Rewrite.Routing;
 public interface IRouter
 {
     public void AddRoute(HttpMethod method,string path, IHttpHandler handler);
-    public bool RouteRequestToHandler(HttpRequest request, Socket socket);
     public Task<bool> RouteRequestToHandlerAsync(HttpRequest request, Socket socket);
 }
