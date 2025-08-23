@@ -8,23 +8,34 @@ namespace Minimal_Web_Server_Rewrite;
 
 class Server
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         var tcpListener = TcpListener.Create(5000);
         tcpListener.Start();
         var router = new HttpRouter();
-        var parser = new HttpParser();
         
         router.AddRoute(HttpMethod.Get, "/", new GetHandler());
         router.AddRoute(HttpMethod.Post, "/", new PostHandler());
         Console.WriteLine("Server started");
         while (true)
         {
-            Socket socket = tcpListener.AcceptSocket();
-            RequestHandler requestHandler = new RequestHandler(parser, router);
-            requestHandler.HandleRequest(socket);
-            socket.Close();
+            try
+            {
+                Socket socket = await tcpListener.AcceptSocketAsync();
+                _ = Task.Run(async () =>
+                {
+                    var parser = new HttpParser(); 
+                    RequestHandler requestHandler = new RequestHandler(parser, router);
+                    await requestHandler.HandleRequestAsync(socket);
+                });
+                socket.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
+
         Console.WriteLine("Server stopped");
     }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics.Contracts;
 using System.Text;
 using Minimal_Web_Server_Rewrite.Models;
 using HttpMethod = Minimal_Web_Server_Rewrite.Models.HttpMethod;
@@ -6,24 +7,25 @@ namespace Minimal_Web_Server_Rewrite.Parsing;
 
 public class HttpParser
 {
+    [Pure]
     public HttpRequest ParseRequest(byte[] buffer)
     {
         var request = new HttpRequest();
         var requestText = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
-        var lines = requestText.Split("\r\n");;
+        var lines = requestText.Split("\r\n");
         if (lines.Length == 0 || string.IsNullOrWhiteSpace(lines[0]))
         {
             return request;
         }
-        
+
         var requestLine = lines[0];
         ParseRequestLine(request, requestLine);
         request.Headers = ParseHeaders(lines, out int bodyIdx);
-        
+
         string headersPart = string.Join("\r\n", lines.Take(bodyIdx));
         byte[] headersPartBytes = Encoding.UTF8.GetBytes(headersPart + "\r\n");
         var bodyStartByteIdx = headersPartBytes.Length;
-        
+
         if (request.Headers.TryGetValue("Content-Length", out var contentLengthStr))
         {
             if (int.TryParse(contentLengthStr, out int contentLength))
@@ -47,6 +49,7 @@ public class HttpParser
             request.Version = requestParts[2];
         }
     }
+    [Pure]
     private Dictionary<string, string> ParseHeaders(string[] lines, out int bodyIdx)
     {
         var headers = new Dictionary<string, string>();
@@ -67,7 +70,7 @@ public class HttpParser
         bodyIdx = -1;
         return headers;
     }
-
+    [Pure]
     private byte[] ParseBody(byte[] buffer, int bodyStartByteIdx, int contentLength)
     {
         if(bodyStartByteIdx < buffer.Length)

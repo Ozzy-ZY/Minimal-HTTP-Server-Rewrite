@@ -25,5 +25,25 @@ public class HttpRouter: IRouter
 
         return false;
     }
-    
+
+    public async Task<bool> RouteRequestToHandlerAsync(HttpRequest request, Socket socket)
+    {
+        var routeKey = $"{request.Method.ToString().ToUpper()}:{request.Path}";
+        if (_routes.TryGetValue(routeKey, out var handler))
+        {
+            try
+            {
+                await handler.HandleRequestAsync(request, socket);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            return true;
+        }
+
+        return false;
+        
+    }
 }
