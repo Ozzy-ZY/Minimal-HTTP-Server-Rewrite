@@ -6,7 +6,7 @@ namespace Minimal_Web_Server_Rewrite.Handlers;
 
 public class PostHandler:IAsyncHandler
 {
-    public async Task HandleRequestAsync(HttpRequest request, Socket socket)
+    public async Task<HttpResponse> HandleRequestAsync(HttpRequest request, Socket socket)
     {
         var responseBuilder = new HttpResponse.ResponseBuilder();
         if (request.Body.Length <= 0)
@@ -16,7 +16,7 @@ public class PostHandler:IAsyncHandler
                 .WithStatusText("Bad Request")
                 .WithHeaders(request.Headers)
                 .Build();
-            await socket.SendAsync(Encoding.UTF8.GetBytes(response.ToString()));
+            return response;
         }
         else
         {
@@ -27,7 +27,7 @@ public class PostHandler:IAsyncHandler
                 .WithStatusText("Created")
                 .WithStatusCode(HttpStatusCode.Created)
                 .Build();
-            await socket.SendAsync(Encoding.UTF8.GetBytes(response.ToString()));
+            return response;
         }
     }
 }

@@ -5,5 +5,5 @@ namespace Minimal_Web_Server_Rewrite.Handlers;
 
 public interface IAsyncHandler: IHttpHandler
 {
-    public Task HandleRequestAsync(HttpRequest request, Socket socket);
+    public Task<HttpResponse> HandleRequestAsync(HttpRequest request, Socket socket);
 }

@@ -5,5 +5,5 @@ namespace Minimal_Web_Server_Rewrite.Handlers;
 
 public interface ISyncHandler : IHttpHandler
 {
-    void HandleRequest(HttpRequest request, Socket socket);
+    HttpResponse HandleRequest(HttpRequest request, Socket socket);
 }
