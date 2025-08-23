@@ -2,7 +2,7 @@ using System.Net.Sockets;
 using System.Text;
 using Minimal_Web_Server_Rewrite.Models;
 
-namespace Minimal_Web_Server_Rewrite.ResponsePipeline;
+namespace Minimal_Web_Server_Rewrite.Pipelines;
 
 public class ResponsePipeline
 {

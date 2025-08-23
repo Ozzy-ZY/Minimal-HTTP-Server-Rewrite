@@ -1,6 +1,6 @@
 using Minimal_Web_Server_Rewrite.Models;
 
-namespace Minimal_Web_Server_Rewrite.ResponsePipeline.Middlewares;
+namespace Minimal_Web_Server_Rewrite.Pipelines.Middlewares;
 
 public class LoggingMiddleware: IResponseMiddleware
 {
