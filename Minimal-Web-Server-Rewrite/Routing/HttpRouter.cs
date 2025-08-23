@@ -19,8 +19,15 @@ public class HttpRouter: IRouter
         var routeKey = $"{request.Method.ToString().ToUpper()}:{request.Path}";
         if (_routes.TryGetValue(routeKey, out var handler))
         {
-            handler.HandleRequest(request, socket);
-            return true;
+            try
+            {
+                handler.HandleRequest(request, socket);
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         return false;
