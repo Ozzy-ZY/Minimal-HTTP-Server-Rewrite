@@ -28,7 +28,6 @@ class Server
                     RequestHandler requestHandler = new RequestHandler(parser, router);
                     await requestHandler.HandleRequestAsync(socket);
                 });
-                socket.Close();
             }
             catch (Exception e)
             {
