@@ -23,8 +23,8 @@ public class HttpRouter(ResponsePipeline pipeline) : IRouter
         if (_routes.TryGetValue(routeKey, out var handler))
         {
             HttpResponse response = new HttpResponse.ResponseBuilder()
-                .WithStatusCode(HttpStatusCode.InternalServerError)
-                .WithStatusText("Internal Server Error")
+                .WithStatusCode(HttpStatusCode.NotImplemented)
+                .WithStatusText("Not Implemented")
                 .Build();
             try
             {
