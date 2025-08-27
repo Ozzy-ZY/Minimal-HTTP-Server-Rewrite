@@ -22,9 +22,12 @@ public class HttpRouter(ResponsePipeline pipeline) : IRouter
         var routeKey = $"{request.Method.ToString().ToUpper()}:{request.Path}";
         if (_routes.TryGetValue(routeKey, out var handler))
         {
+            HttpResponse response = new HttpResponse.ResponseBuilder()
+                .WithStatusCode(HttpStatusCode.InternalServerError)
+                .WithStatusText("Internal Server Error")
+                .Build();
             try
             {
-                HttpResponse response;
                 switch (handler)
                 {
                     case IAsyncHandler asyncHandler:
@@ -34,19 +37,22 @@ public class HttpRouter(ResponsePipeline pipeline) : IRouter
                         response = await Task.Run( () => syncHandler.HandleRequest(request, socket));
                         break;
                     default:
-                        HttpResponse.ResponseBuilder responseBuilder = new();
-                        response = responseBuilder.WithStatusCode(HttpStatusCode.NotFound).WithStatusText("Not Found").Build();
                         break;
                 }
-                await pipeline.ExecutePipelineAsync(request, response, socket);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
+            await pipeline.ExecutePipelineAsync(request, response, socket);
             return true;
         }
-
+        HttpResponse.ResponseBuilder responseBuilder = new();
+        var notFoundResponse = responseBuilder
+            .WithStatusCode(HttpStatusCode.NotFound)
+            .WithStatusText("Not Found")
+            .Build();
+        await pipeline.ExecutePipelineAsync(request, notFoundResponse, socket);
         return false;
         
     }
