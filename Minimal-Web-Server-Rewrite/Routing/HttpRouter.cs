@@ -20,9 +20,10 @@ public class HttpRouter(ResponsePipeline pipeline) : IRouter
     public async Task<bool> RouteRequestToHandlerAsync(HttpRequest request, Socket socket)
     {
         var routeKey = $"{request.Method.ToString().ToUpper()}:{request.Path}";
+        HttpResponse response;
         if (_routes.TryGetValue(routeKey, out var handler))
-        {
-            HttpResponse response = new HttpResponse.ResponseBuilder()
+        { 
+            response = new HttpResponse.ResponseBuilder()
                 .WithStatusCode(HttpStatusCode.NotImplemented)
                 .WithStatusText("Not Implemented")
                 .Build();
@@ -44,16 +45,20 @@ public class HttpRouter(ResponsePipeline pipeline) : IRouter
             {
                 Console.WriteLine(e.Message);
             }
-            await pipeline.ExecutePipelineAsync(request, response, socket);
-            return true;
         }
-        HttpResponse.ResponseBuilder responseBuilder = new();
-        var notFoundResponse = responseBuilder
-            .WithStatusCode(HttpStatusCode.NotFound)
-            .WithStatusText("Not Found")
-            .Build();
-        await pipeline.ExecutePipelineAsync(request, notFoundResponse, socket);
-        return false;
+        else
+        {
+            HttpResponse.ResponseBuilder responseBuilder = new();
+            response = responseBuilder
+                .WithStatusCode(HttpStatusCode.NotFound)
+                .WithStatusText("Not Found")
+                .Build();
+        }
+
+        var finalResponse = await pipeline.ExecutePipelineAsync(request, response);
+        await pipeline.SendResponseAsync(finalResponse, socket);
+    
+        return _routes.ContainsKey(routeKey);
         
     }
 }
