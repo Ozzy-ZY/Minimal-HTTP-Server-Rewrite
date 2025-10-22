@@ -6,23 +6,29 @@ namespace Minimal_Web_Server_Rewrite.Pipelines;
 
 public class ResponsePipeline
 {
-    private readonly LinkedList<IResponseMiddleware> _pipeline = new LinkedList<IResponseMiddleware>();
+    private readonly List<IResponseMiddleware> _pipeline = new() { };
     public void Use(IResponseMiddleware middleware)
     {
-        _pipeline.AddLast(middleware);
+        _pipeline.Add(middleware);
     }
 
-    public async Task ExecutePipelineAsync(HttpRequest request, HttpResponse response, Socket socket)
+    public async Task<HttpResponse> ExecutePipelineAsync(HttpRequest request, HttpResponse response)
     {
-        var next = _pipeline.First;
-        while (next != null)
+        Func<HttpRequest, HttpResponse, Task<HttpResponse>> pipeline = (req, res) => Task.FromResult(res);
+        for (int i = _pipeline.Count - 1; i >= 0; i--)
         {
-            var middleware = next.Value;
-            var nextMiddleware = next.Next?.Value;
-            Console.WriteLine(response);
-            await middleware.ProcessAsync(request, ref response, ref next);
-            next = next?.Next;
+            var middleware = _pipeline[i];
+            var next = pipeline; // Capture current pipeline in closure
+            
+            pipeline = async (req, res) =>
+            {
+                return await middleware.ProcessAsync(req, res, next);
+            };
         }
+        return await pipeline(request, response);
+    }
+    public async Task SendResponseAsync(HttpResponse response, Socket socket)
+    {
         await socket.SendAsync(Encoding.UTF8.GetBytes(response.ToString()));
     }
 }
