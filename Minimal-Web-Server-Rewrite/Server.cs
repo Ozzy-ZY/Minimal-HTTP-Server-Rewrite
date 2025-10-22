@@ -15,6 +15,7 @@ class Server
         var tcpListener = TcpListener.Create(5000);
         tcpListener.Start();
         var pipeline = new ResponsePipeline();
+        pipeline.Use(new CustomHeadersMiddleware());
         pipeline.Use(new LoggingMiddleware());
         
         var router = new HttpRouter(pipeline);
