@@ -21,6 +21,11 @@ class Server
         var router = new HttpRouter(pipeline);
         router.AddRoute(HttpMethod.Get, "/", new GetHandler());
         router.AddRoute(HttpMethod.Post, "/", new PostHandler());
+        
+        // Reuse parser and request handler instances to reduce allocations
+        var parser = new HttpParser();
+        var requestHandler = new RequestHandler(parser, router);
+        
         Console.WriteLine("Server started");
         while (true)
         {
@@ -29,8 +34,6 @@ class Server
                 Socket socket = await tcpListener.AcceptSocketAsync();
                 _ = Task.Run(async () =>
                 {
-                    var parser = new HttpParser(); 
-                    RequestHandler requestHandler = new RequestHandler(parser, router);
                     await requestHandler.HandleRequestAsync(socket);
                 });
             }

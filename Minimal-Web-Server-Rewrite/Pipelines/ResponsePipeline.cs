@@ -7,12 +7,16 @@ namespace Minimal_Web_Server_Rewrite.Pipelines;
 public class ResponsePipeline
 {
     private readonly List<IResponseMiddleware> _pipeline = new() { };
+    private Func<HttpRequest, HttpResponse, Task<HttpResponse>>? _compiledPipeline;
+
     public void Use(IResponseMiddleware middleware)
     {
         _pipeline.Add(middleware);
+        // Invalidate compiled pipeline when middleware is added
+        _compiledPipeline = null;
     }
 
-    public async Task<HttpResponse> ExecutePipelineAsync(HttpRequest request, HttpResponse response)
+    private Func<HttpRequest, HttpResponse, Task<HttpResponse>> BuildPipeline()
     {
         Func<HttpRequest, HttpResponse, Task<HttpResponse>> pipeline = (req, res) => Task.FromResult(res);
         for (int i = _pipeline.Count - 1; i >= 0; i--)
@@ -25,8 +29,16 @@ public class ResponsePipeline
                 return await middleware.ProcessAsync(req, res, next);
             };
         }
-        return await pipeline(request, response);
+        return pipeline;
     }
+
+    public async Task<HttpResponse> ExecutePipelineAsync(HttpRequest request, HttpResponse response)
+    {
+        // Build pipeline once and cache it
+        _compiledPipeline ??= BuildPipeline();
+        return await _compiledPipeline(request, response);
+    }
+    
     public async Task SendResponseAsync(HttpResponse response, Socket socket)
     {
         await socket.SendAsync(Encoding.UTF8.GetBytes(response.ToString()));
