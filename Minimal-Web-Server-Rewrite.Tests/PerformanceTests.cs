@@ -21,16 +21,24 @@ namespace Minimal_Web_Server_Rewrite.Tests
             var buffer = Encoding.UTF8.GetBytes(requestString);
 
             // Act - Reuse parser multiple times
+            HttpRequest lastResult = null!;
             var sw = Stopwatch.StartNew();
             for (int i = 0; i < 1000; i++)
             {
-                var result = parser.ParseRequest(buffer, buffer.Length);
+                lastResult = parser.ParseRequest(buffer, buffer.Length);
             }
             sw.Stop();
 
             // Assert - Should complete quickly with reused instance
             Assert.True(sw.ElapsedMilliseconds < 100, 
                 $"Parser should handle 1000 requests quickly but took {sw.ElapsedMilliseconds}ms");
+            
+            // Verify correctness of last parse
+            Assert.NotNull(lastResult);
+            Assert.Equal(HttpMethod.Get, lastResult.Method);
+            Assert.Equal("/test", lastResult.Path);
+            Assert.Equal("HTTP/1.1", lastResult.Version);
+            Assert.Equal("localhost", lastResult.Headers["Host"]);
         }
 
         [Fact]
