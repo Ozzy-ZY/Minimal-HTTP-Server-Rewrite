@@ -51,12 +51,25 @@ public class HttpResponse
 
     public override string ToString()
     {
-        var stringBuilder = new StringBuilder();
-        stringBuilder.Append($"{Version} {(int)StatusCode} {StatusText}\r\n");
+        // Pre-calculate approximate capacity to reduce reallocations
+        int capacity = 50 + (Headers.Count * 30) + Body.Length;
+        var stringBuilder = new StringBuilder(capacity);
+        
+        stringBuilder.Append(Version)
+            .Append(' ')
+            .Append((int)StatusCode)
+            .Append(' ')
+            .Append(StatusText)
+            .Append("\r\n");
+            
         foreach (var header in Headers)
         {
-            stringBuilder.Append($"{header.Key}: {header.Value}\r\n");
+            stringBuilder.Append(header.Key)
+                .Append(": ")
+                .Append(header.Value)
+                .Append("\r\n");
         }
+        
         stringBuilder.Append("\r\n");
         stringBuilder.Append(Encoding.UTF8.GetString(Body));
         return stringBuilder.ToString();

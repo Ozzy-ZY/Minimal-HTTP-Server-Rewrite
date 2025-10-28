@@ -14,8 +14,8 @@ public class RequestHandler(HttpParser parser, IRouter router)
             var size = socket.ReceiveBufferSize;
             var buffer = new byte[size];
             int bytesRead = await socket.ReceiveAsync(buffer);
-            Array.Resize(ref buffer, bytesRead);
-            var request = parser.ParseRequest(buffer);
+            // Use ArraySegment to avoid copying the entire buffer
+            var request = parser.ParseRequest(buffer, bytesRead);
             await router.RouteRequestToHandlerAsync(request, socket);
         }
         finally

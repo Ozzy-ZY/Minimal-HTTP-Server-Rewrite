@@ -10,8 +10,14 @@ public class HttpParser
     [Pure]
     public HttpRequest ParseRequest(byte[] buffer)
     {
+        return ParseRequest(buffer, buffer.Length);
+    }
+
+    [Pure]
+    public HttpRequest ParseRequest(byte[] buffer, int bytesRead)
+    {
         var request = new HttpRequest();
-        var requestText = Encoding.UTF8.GetString(buffer).TrimEnd('\0');
+        var requestText = Encoding.UTF8.GetString(buffer, 0, bytesRead).TrimEnd('\0');
         var lines = requestText.Split("\r\n");
         if (lines.Length == 0 || string.IsNullOrWhiteSpace(lines[0]))
         {
@@ -30,7 +36,7 @@ public class HttpParser
         {
             if (int.TryParse(contentLengthStr, out int contentLength))
             {
-                request.Body = ParseBody(buffer, bodyStartByteIdx, contentLength);
+                request.Body = ParseBody(buffer, bodyStartByteIdx, contentLength, bytesRead);
             }
         }
         return request;
@@ -71,11 +77,11 @@ public class HttpParser
         return headers;
     }
     [Pure]
-    private byte[] ParseBody(byte[] buffer, int bodyStartByteIdx, int contentLength)
+    private byte[] ParseBody(byte[] buffer, int bodyStartByteIdx, int contentLength, int bytesRead)
     {
-        if(bodyStartByteIdx < buffer.Length)
+        if(bodyStartByteIdx < bytesRead)
         {
-            int neededBytes = buffer.Length - bodyStartByteIdx;
+            int neededBytes = bytesRead - bodyStartByteIdx;
             int bytesToRead = Math.Min(neededBytes, contentLength);
             byte[] body = new byte[bytesToRead];
             Array.Copy(buffer, bodyStartByteIdx, body, 0, bytesToRead);
