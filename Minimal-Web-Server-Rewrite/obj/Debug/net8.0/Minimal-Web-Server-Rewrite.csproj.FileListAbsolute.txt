@@ -1,0 +1,15 @@
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/bin/Debug/net8.0/Minimal-Web-Server-Rewrite
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/bin/Debug/net8.0/Minimal-Web-Server-Rewrite.deps.json
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/bin/Debug/net8.0/Minimal-Web-Server-Rewrite.runtimeconfig.json
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/bin/Debug/net8.0/Minimal-Web-Server-Rewrite.dll
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/bin/Debug/net8.0/Minimal-Web-Server-Rewrite.pdb
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/Minimal-Web-Server-Rewrite.GeneratedMSBuildEditorConfig.editorconfig
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/Minimal-Web-Server-Rewrite.AssemblyInfoInputs.cache
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/Minimal-Web-Server-Rewrite.AssemblyInfo.cs
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/Minimal-Web-Server-Rewrite.csproj.CoreCompileInputs.cache
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/Minimal-Web-Server-Rewrite.sourcelink.json
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/Minimal-Web-Server-Rewrite.dll
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/refint/Minimal-Web-Server-Rewrite.dll
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/Minimal-Web-Server-Rewrite.pdb
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/Minimal-Web-Server-Rewrite.genruntimeconfig.cache
+/home/runner/work/Minimal-HTTP-Server-Rewrite/Minimal-HTTP-Server-Rewrite/Minimal-Web-Server-Rewrite/obj/Debug/net8.0/ref/Minimal-Web-Server-Rewrite.dll
